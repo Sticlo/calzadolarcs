@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calzado Larcs — Elegancia vintage, confort moderno</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+
+    <header class="site-header" id="top">
+      <div class="site-header__inner container">
+        <a class="site-header__logo" href="#inicio" aria-label="Calzado Larcs, inicio">
+          <img
+            class="site-header__logo-img"
+            src="assets/logolarcs.png"
+            alt="Calzado Larcs"
+            width="160"
+            height="48"
+            decoding="async"
+          />
+        </a>
+
+        <button
+          type="button"
+          class="site-header__menu-btn"
+          id="navToggle"
+          aria-expanded="false"
+          aria-controls="siteNav"
+          aria-label="Abrir o cerrar menú"
+        >
+          <span class="site-header__menu-bar" aria-hidden="true"></span>
+          <span class="site-header__menu-bar" aria-hidden="true"></span>
+          <span class="site-header__menu-bar" aria-hidden="true"></span>
+        </button>
+
+        <nav class="site-header__nav" id="siteNav" aria-label="Principal">
+          <ul class="site-header__list">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#categorias">Categorías</a></li>
+            <li><a href="#tacones">Tacones</a></li>
+            <li><a href="#beneficios">Por qué Larcs</a></li>
+            <li><a href="#historia">Historia</a></li>
+            <li><a href="#nosotras">Nosotras</a></li>
+            <li><a href="#testimonios">Clientes</a></li>
+            <li><a href="#envios">Envíos</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#pagos">Pagos</a></li>
+          </ul>
+        </nav>
+
+        <button
+          type="button"
+          class="site-header__cart-btn"
+          id="cartToggle"
+          aria-expanded="false"
+          aria-controls="cartDrawer"
+          aria-label="Abrir carrito"
+        >
+          <svg class="site-header__cart-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M6 7h15l-1.5 9H7.5L6 7Zm0 0L5 3H2"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+            <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+          </svg>
+          <span class="site-header__cart-badge" id="cartBadge" aria-hidden="true">0</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="cart-backdrop" id="cartBackdrop" aria-hidden="true"></div>
+    <aside
+      class="cart-drawer"
+      id="cartDrawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cartTitle"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <div class="cart-drawer__head">
+        <h2 class="cart-drawer__title" id="cartTitle">Tu carrito</h2>
+        <button type="button" class="cart-drawer__close" id="cartClose" aria-label="Cerrar carrito">×</button>
+      </div>
+      <div class="cart-drawer__scroll">
+        <div class="cart-step cart-step--cart is-active" id="cartStepCart" data-step="cart">
+          <p class="cart-drawer__hint">
+            Simulación: añade tacones abajo con <strong>Comprar</strong>. Ningún cargo es real.
+          </p>
+          <ul class="cart-lines" id="cartLines"></ul>
+          <p class="cart-empty" id="cartEmpty">Tu carrito está vacío. Ve a <a href="#tacones">Tacones</a> y pulsa Comprar.</p>
+          <div class="cart-summary" id="cartSummaryBlock" hidden>
+            <div class="cart-summary__row">
+              <span>Subtotal</span>
+              <span id="cartSubtotal">$0</span>
+            </div>
+            <div class="cart-summary__row cart-summary__row--muted">
+              <span>Envío (simulado)</span>
+              <span id="cartShipping">$120</span>
+            </div>
+            <div class="cart-summary__row cart-summary__row--total">
+              <span>Total</span>
+              <span id="cartTotal">$0</span>
+            </div>
+          </div>
+          <p class="cart-drawer__toast" id="cartAddFeedback" role="status" aria-live="polite"></p>
+          <div class="cart-drawer__actions" id="cartActionsCart">
+            <button type="button" class="btn btn--checkout" id="btnGoCheckout" disabled>Continuar al pago</button>
+          </div>
+        </div>
+
+        <div class="cart-step cart-step--checkout" id="cartStepCheckout" data-step="checkout" hidden>
+          <button type="button" class="cart-step__back" id="btnBackCart">← Volver al carrito</button>
+          <p class="cart-drawer__checkout-label">Datos de tarjeta (ficticios)</p>
+          <form class="checkout-form" id="fakeCheckoutForm" autocomplete="off" novalidate>
+            <label class="checkout-form__field">
+              <span class="checkout-form__label">Nombre en la tarjeta</span>
+              <input type="text" name="cardname" placeholder="Ej. Ana López" required maxlength="80" />
+            </label>
+            <label class="checkout-form__field">
+              <span class="checkout-form__label">Número de tarjeta</span>
+              <input
+                type="text"
+                name="cardnumber"
+                inputmode="numeric"
+                placeholder="4242 4242 4242 4242"
+                required
+                minlength="15"
+                maxlength="23"
+              />
+            </label>
+            <div class="checkout-form__row">
+              <label class="checkout-form__field">
+                <span class="checkout-form__label">Vencimiento</span>
+                <input type="text" name="cardexp" placeholder="MM/AA" required maxlength="5" />
+              </label>
+              <label class="checkout-form__field">
+                <span class="checkout-form__label">CVV</span>
+                <input type="text" name="cardcvv" inputmode="numeric" placeholder="123" required maxlength="4" />
+              </label>
+            </div>
+            <label class="checkout-form__check">
+              <input type="checkbox" name="accept" required />
+              <span>Acepto que esto es una <strong>demostración</strong> y no autorizo ningún cargo.</span>
+            </label>
+            <div class="payments__mock payments__mock--compact" role="presentation">
+              <div class="payments__mock-header">
+                <span class="payments__mock-lock" aria-hidden="true">🔒</span>
+                <span>Pasarela simulada</span>
+              </div>
+              <div class="payments__rail payments__rail--compact" aria-hidden="true">
+                <div class="pay-chip pay-chip--visa">Visa</div>
+                <div class="pay-chip pay-chip--mc"><span class="pay-chip__mc" aria-hidden="true"></span>MC</div>
+                <div class="pay-chip pay-chip--amex">Amex</div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn--checkout" id="btnConfirmFakePay">Confirmar pago (demo)</button>
+          </form>
+          <p class="cart-drawer__toast" id="cartToast" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="cart-step cart-step--success" id="cartStepSuccess" data-step="success" hidden>
+          <div class="cart-success">
+            <span class="cart-success__icon" aria-hidden="true">✓</span>
+            <h3 class="cart-success__title">¡Pedido simulado!</h3>
+            <p class="cart-success__text">
+              No se ha guardado ni cobrado nada. Así podrías mostrar el mensaje de confirmación a tu cliente.
+            </p>
+            <button type="button" class="btn btn--checkout" id="btnFinishDemo">Cerrar y seguir navegando</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero__content">
+        <p class="hero__eyebrow">Calzado Larcs</p>
+        <h1 class="hero__title" id="hero-title">
+          Tu viaje de estilo comienza aquí.<br />
+          Calzado Larcs.
+        </h1>
+        <p class="hero__subtitle">
+          Descubre la elegancia vintage y el confort moderno en cada paso.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#tacones">Ver tacones</a>
+          <a class="btn btn--ghost" href="#ultimos-pares">Últimos pares</a>
+          <button type="button" class="btn btn--ghost btn--ghost-pink" id="heroOpenCart">Abrir carrito</button>
+        </div>
+        <p class="hero__badge" role="status">
+          <span class="hero__badge-dot" aria-hidden="true"></span>
+          Novedades cada semana · envíos a todo el país
+        </p>
+      </div>
+    </section>
+
+    <div class="ticker-strip" aria-hidden="true">
+      <div class="ticker-strip__track">
+        <span>✦ Nuevas colecciones cada semana</span>
+        <span>◇ Envío a todo el país</span>
+        <span>♥ Empaque especial con cada pedido</span>
+        <span>★ Tallas del 22 al 26</span>
+        <span>✦ Asesoría personalizada por WhatsApp</span>
+        <span>◇ Outlet con hasta 40% de descuento</span>
+        <span>♥ Calidad boutique, entrega express</span>
+        <span>★ Sandalias, tacones, mocasines y más</span>
+        <span>✦ Nuevas colecciones cada semana</span>
+        <span>◇ Envío a todo el país</span>
+        <span>♥ Empaque especial con cada pedido</span>
+        <span>★ Tallas del 22 al 26</span>
+        <span>✦ Asesoría personalizada por WhatsApp</span>
+        <span>◇ Outlet con hasta 40% de descuento</span>
+        <span>♥ Calidad boutique, entrega express</span>
+        <span>★ Sandalias, tacones, mocasines y más</span>
+      </div>
+    </div>
+
+    <main id="main">
+      <section class="section section--categories" id="categorias">
+        <div class="container">
+          <h2 class="section__title">Nuestras categorías</h2>
+          <div class="cards cards--4">
+            <article class="card">
+              <div class="card__image-wrap">
+                <img
+                  src="assets/vitrina-tacones.png"
+                  alt="Sandalias y cuñas en vitrina"
+                  width="600"
+                  height="480"
+                  loading="lazy"
+                />
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">Sandalias &amp; cuñas</h3>
+                <p class="card__text">Ligeras, versátiles y listas para el verano.</p>
+                <button type="button" class="btn btn--small">Ver más</button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card__image-wrap">
+                <img
+                  src="assets/tienda-2.png"
+                  alt="Bolsos y accesorios en boutique Larcs"
+                  width="600"
+                  height="480"
+                  loading="lazy"
+                />
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">Bolsos chic</h3>
+                <p class="card__text">Complementos que elevan cualquier look.</p>
+                <button type="button" class="btn btn--small">Ver más</button>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card__image-wrap">
+                <img
+                  src="assets/tienda-1.png"
+                  alt="Calzado y sala de exhibición Larcs"
+                  width="600"
+                  height="480"
+                  loading="lazy"
+                />
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">Zapatillas &amp; mocasines</h3>
+                <p class="card__text">Confort diario con un toque refinado.</p>
+                <button type="button" class="btn btn--small">Ver más</button>
+              </div>
+            </article>
+            <article class="card" id="ultimos-pares">
+              <div class="card__image-wrap card__image-wrap--outlet">
+                <span class="card__ribbon" aria-hidden="true">Últimos pares</span>
+                <span class="card__outlet-tag" aria-hidden="true">%</span>
+                <img
+                  src="assets/tienda-2.png"
+                  alt="Outlet y ofertas en tienda"
+                  width="600"
+                  height="480"
+                  loading="lazy"
+                />
+              </div>
+              <div class="card__body">
+                <h3 class="card__title">Outlet &amp; ofertas</h3>
+                <p class="card__text">Piezas seleccionadas a precios especiales.</p>
+                <button type="button" class="btn btn--small">Ver más</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--temporada" id="temporada" aria-labelledby="temporada-title">
+        <div class="container">
+          <h2 class="section__title" id="temporada-title" data-reveal="fade-up">Colección Temporada 2026</h2>
+          <div class="temporada__grid">
+            <div class="temporada__feature temporada__feature--main" data-reveal="fade-up">
+              <div class="temporada__img-wrap">
+                <img
+                  src="assets/vitrina-tacones.png"
+                  alt="Colección Primavera Verano Calzado Larcs"
+                  width="900"
+                  height="700"
+                  loading="lazy"
+                />
+              </div>
+              <div class="temporada__overlay">
+                <span class="temporada__tag">Temporada 2026</span>
+                <h3 class="temporada__name">Primavera · Verano</h3>
+                <p class="temporada__desc">Tonos coral, blanco perla y negro elegante para cada ocasión.</p>
+                <a class="btn btn--ghost" href="#tacones">Ver colección</a>
+              </div>
+            </div>
+            <div class="temporada__feature temporada__feature--side" data-reveal="fade-up" style="--delay:.14s">
+              <div class="temporada__img-wrap">
+                <img
+                  src="assets/tienda-1.png"
+                  alt="Nuevas llegadas Larcs strass y gala"
+                  width="600"
+                  height="600"
+                  loading="lazy"
+                  style="object-position:60% 20%"
+                />
+              </div>
+              <div class="temporada__overlay temporada__overlay--dark">
+                <span class="temporada__tag">Nuevas llegadas</span>
+                <h3 class="temporada__name">Strass &amp; gala</h3>
+                <p class="temporada__desc">Para las noches que merecen brillar.</p>
+                <a class="btn btn--ghost" href="#tacones">Explorar</a>
+              </div>
+            </div>
+            <div class="temporada__feature temporada__feature--side" data-reveal="fade-up" style="--delay:.28s">
+              <div class="temporada__img-wrap">
+                <img
+                  src="assets/tienda-2.png"
+                  alt="Outlet Larcs primavera"
+                  width="600"
+                  height="600"
+                  loading="lazy"
+                  style="object-position:30% 50%"
+                />
+              </div>
+              <div class="temporada__overlay">
+                <span class="temporada__tag temporada__tag--pink">Outlet · Hasta −40%</span>
+                <h3 class="temporada__name">Últimos pares</h3>
+                <p class="temporada__desc">Piezas seleccionadas a precios únicos.</p>
+                <a class="btn btn--ghost" href="#ultimos-pares">Ver outlet</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--catalog" id="tacones" aria-labelledby="tacones-title">
+        <div class="container">
+          <h2 class="section__title" id="tacones-title">Tacones · compra demo</h2>
+          <p class="catalog__intro">
+            Elige talla y pulsa <strong>Comprar</strong>: el artículo se añade al carrito. Luego continúa al pago para rellenar una tarjeta de
+            <strong>prueba</strong> (no uses datos reales).
+          </p>
+          <div class="catalog" id="catalogTacones">
+            <article class="product-card" data-product-id="larcs-t1">
+              <div class="product-card__img">
+                <img
+                  src="assets/vitrina-tacones.png"
+                  alt="Tacón plataforma rojo"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  style="object-position: 15% 30%"
+                />
+              </div>
+              <h3 class="product-card__title">Plataforma rojo pasión</h3>
+              <p class="product-card__meta">Tacón 9 cm · planta acolchada</p>
+              <p class="product-card__price">$1,290</p>
+              <label class="product-card__field">
+                <span class="product-card__label">Talla</span>
+                <select class="product-card__size" aria-label="Talla para Plataforma rojo pasión">
+                  <option value="22">22</option>
+                  <option value="22.5">22.5</option>
+                  <option value="23">23</option>
+                  <option value="23.5">23.5</option>
+                  <option value="24">24</option>
+                  <option value="24.5">24.5</option>
+                  <option value="25" selected>25</option>
+                  <option value="25.5">25.5</option>
+                  <option value="26">26</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn--buy js-add-to-cart" data-product-id="larcs-t1">Comprar</button>
+            </article>
+            <article class="product-card" data-product-id="larcs-t2">
+              <div class="product-card__img">
+                <img
+                  src="assets/tienda-1.png"
+                  alt="Sandalia strass noche"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  style="object-position: 60% 25%"
+                />
+              </div>
+              <h3 class="product-card__title">Strass noche</h3>
+              <p class="product-card__meta">Gala · correa tobillo</p>
+              <p class="product-card__price">$1,180</p>
+              <label class="product-card__field">
+                <span class="product-card__label">Talla</span>
+                <select class="product-card__size" aria-label="Talla para Strass noche">
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25" selected>25</option>
+                  <option value="26">26</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn--buy js-add-to-cart" data-product-id="larcs-t2">Comprar</button>
+            </article>
+            <article class="product-card" data-product-id="larcs-t3">
+              <div class="product-card__img">
+                <img
+                  src="assets/tienda-2.png"
+                  alt="Stiletto nude elegancia"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  style="object-position: 50% 20%"
+                />
+              </div>
+              <h3 class="product-card__title">Stiletto nude elegancia</h3>
+              <p class="product-card__meta">Tacón 10 cm · punta fina</p>
+              <p class="product-card__price">$1,350</p>
+              <label class="product-card__field">
+                <span class="product-card__label">Talla</span>
+                <select class="product-card__size" aria-label="Talla para Stiletto nude elegancia">
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25" selected>25</option>
+                  <option value="26">26</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn--buy js-add-to-cart" data-product-id="larcs-t3">Comprar</button>
+            </article>
+            <article class="product-card" data-product-id="larcs-t4">
+              <div class="product-card__img">
+                <img
+                  src="assets/tienda-2.png"
+                  alt="Sandalia bloque terracota"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  style="object-position: 20% 40%"
+                />
+              </div>
+              <h3 class="product-card__title">Bloque terracota</h3>
+              <p class="product-card__meta">Confort · tacón ancho 7 cm</p>
+              <p class="product-card__price">$1,090</p>
+              <label class="product-card__field">
+                <span class="product-card__label">Talla</span>
+                <select class="product-card__size" aria-label="Talla para Bloque terracota">
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24" selected>24</option>
+                  <option value="25">25</option>
+                  <option value="26">26</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn--buy js-add-to-cart" data-product-id="larcs-t4">Comprar</button>
+            </article>
+            <article class="product-card" data-product-id="larcs-t5">
+              <div class="product-card__img">
+                <img
+                  src="assets/tienda-1.png"
+                  alt="T-bar metálico plata"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  style="object-position: 30% 55%"
+                />
+              </div>
+              <h3 class="product-card__title">T-bar metálico plata</h3>
+              <p class="product-card__meta">Fiesta · hebilla minimal</p>
+              <p class="product-card__price">$1,220</p>
+              <label class="product-card__field">
+                <span class="product-card__label">Talla</span>
+                <select class="product-card__size" aria-label="Talla para T-bar metálico plata">
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25" selected>25</option>
+                  <option value="26">26</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn--buy js-add-to-cart" data-product-id="larcs-t5">Comprar</button>
+            </article>
+            <article class="product-card" data-product-id="larcs-t6">
+              <div class="product-card__img">
+                <img
+                  src="assets/vitrina-tacones.png"
+                  alt="Sandalia transparente clear"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  style="object-position: 75% 50%"
+                />
+              </div>
+              <h3 class="product-card__title">Clear minimal</h3>
+              <p class="product-card__meta">Vinilo · tacón 8 cm</p>
+              <p class="product-card__price">$980</p>
+              <label class="product-card__field">
+                <span class="product-card__label">Talla</span>
+                <select class="product-card__size" aria-label="Talla para Clear minimal">
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25" selected>25</option>
+                  <option value="26">26</option>
+                </select>
+              </label>
+              <button type="button" class="btn btn--buy js-add-to-cart" data-product-id="larcs-t6">Comprar</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--benefits" id="beneficios" aria-labelledby="beneficios-title">
+        <div class="container">
+          <h2 class="section__title" id="beneficios-title">Por qué elegir Larcs</h2>
+          <ul class="benefits">
+            <li class="benefits__item">
+              <span class="benefits__icon" aria-hidden="true">✦</span>
+              <h3 class="benefits__name">Curaduría real</h3>
+              <p class="benefits__text">Selección probada en tienda: lo que ves en web es lo que tenemos en perchero.</p>
+            </li>
+            <li class="benefits__item">
+              <span class="benefits__icon" aria-hidden="true">◇</span>
+              <h3 class="benefits__name">Tallas y asesoría</h3>
+              <p class="benefits__text">Te ayudamos por WhatsApp a elegir talla y horma antes de comprar.</p>
+            </li>
+            <li class="benefits__item">
+              <span class="benefits__icon" aria-hidden="true">♥</span>
+              <h3 class="benefits__name">Empaque cuidado</h3>
+              <p class="benefits__text">Cada envío sale como regalo: papel tissue, bolsa y sticker de la marca.</p>
+            </li>
+            <li class="benefits__item">
+              <span class="benefits__icon" aria-hidden="true">★</span>
+              <h3 class="benefits__name">Experiencia boutique</h3>
+              <p class="benefits__text">Estética femenina, colores vivos y foco en confort para el día a día.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section section--spotlight" aria-labelledby="spotlight-title">
+        <div class="container">
+          <h2 class="section__title section__title--light" id="spotlight-title">Así vive Larcs</h2>
+          <p class="spotlight__intro">
+            Blancos luminosos, flores rosa y vitrinas llenas de color: la misma energía de nuestra tienda, ahora en tu pantalla.
+          </p>
+          <div class="spotlight__grid">
+            <figure class="spotlight__figure spotlight__figure--tall">
+              <img src="assets/tienda-1.png" alt="Interior boutique Calzado Larcs con flores rosa" width="900" height="1200" loading="lazy" />
+              <figcaption>Flores, luz y pasillos pensados para probarte con calma.</figcaption>
+            </figure>
+            <figure class="spotlight__figure">
+              <img src="assets/tienda-2.png" alt="Mostrador Larcs con bolsos y calzado" width="900" height="700" loading="lazy" />
+              <figcaption>Mostrador central: asesoría personal y últimas llegadas.</figcaption>
+            </figure>
+            <figure class="spotlight__figure spotlight__figure--wide">
+              <img src="assets/vitrina-tacones.png" alt="Vitrina con tacones y plataformas" width="1200" height="600" loading="lazy" />
+              <figcaption>Tacones y plataformas listos para brillar en cualquier plan.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--history" id="historia">
+        <div class="history__deco history__deco--left" aria-hidden="true"></div>
+        <div class="history__deco history__deco--right" aria-hidden="true"></div>
+        <div class="history__blossoms" aria-hidden="true"></div>
+        <div class="container container--narrow">
+          <h2 class="section__title">Nuestra historia</h2>
+          <p class="history__text">
+            Inspirados en la sofisticación de épocas pasadas, curamos una colección para la mujer moderna que valora la
+            elegancia sin esfuerzo y la comodidad absoluta.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--nosotras" id="nosotras" aria-labelledby="nosotras-title">
+        <div class="nosotras__bg" aria-hidden="true"></div>
+        <div class="container">
+          <h2 class="section__title section__title--light" id="nosotras-title" data-reveal="fade-up">Quiénes somos</h2>
+          <p class="nosotras__lead" data-reveal="fade-up" style="--delay:.08s">
+            Somos una boutique fundada con pasión por la moda femenina y el confort. Cada par que ofrecemos
+            pasa por nuestra curaduría personal para que llegues siempre con el estilo exacto.
+          </p>
+          <div class="stats" data-reveal="fade-up" style="--delay:.16s">
+            <div class="stats__item">
+              <span class="stats__num" data-count="2500">0</span>
+              <span class="stats__label">Clientas felices</span>
+            </div>
+            <div class="stats__item">
+              <span class="stats__num" data-count="180">0</span>
+              <span class="stats__label">Modelos en tienda</span>
+            </div>
+            <div class="stats__item">
+              <span class="stats__num" data-count="8">0</span>
+              <span class="stats__label">Años en el mercado</span>
+            </div>
+            <div class="stats__item">
+              <span class="stats__num" data-count="32">0</span>
+              <span class="stats__label">Marcas curadas</span>
+            </div>
+          </div>
+          <blockquote class="nosotras__quote" data-reveal="fade-up" style="--delay:.24s">
+            <p>"Creemos que cada mujer merece un calzado que cuente su historia."</p>
+            <cite>— Equipo Larcs</cite>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="section section--testimonials" id="testimonios">
+        <div class="container">
+          <h2 class="section__title">Clientes felices</h2>
+          <div class="testimonials">
+            <div class="testimonials__viewport">
+              <div class="testimonials__track" id="testimonialTrack"></div>
+            </div>
+            <div class="testimonials__dots" id="testimonialDots" role="tablist" aria-label="Testimonios"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--instagram" id="instagram" aria-labelledby="instagram-title">
+        <div class="container">
+          <h2 class="section__title" id="instagram-title" data-reveal="fade-up">Síguenos en Instagram</h2>
+          <p class="instagram__sub">@calzadolarcs · Inspiración diaria, looks reales, novedades</p>
+          <div class="insta-grid" data-reveal="fade-up" style="--delay:.1s">
+            <a class="insta-tile" href="#" aria-label="Publicación en Instagram">
+              <img src="assets/tienda-1.png" alt="" width="400" height="400" loading="lazy" />
+              <div class="insta-tile__overlay" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"/></svg></div>
+            </a>
+            <a class="insta-tile" href="#" aria-label="Publicación en Instagram">
+              <img src="assets/tienda-2.png" alt="" width="400" height="400" loading="lazy" style="object-position:40% 20%" />
+              <div class="insta-tile__overlay" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"/></svg></div>
+            </a>
+            <a class="insta-tile" href="#" aria-label="Publicación en Instagram">
+              <img src="assets/vitrina-tacones.png" alt="" width="400" height="400" loading="lazy" style="object-position:70% 40%" />
+              <div class="insta-tile__overlay" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"/></svg></div>
+            </a>
+            <a class="insta-tile" href="#" aria-label="Publicación en Instagram">
+              <img src="assets/tienda-1.png" alt="" width="400" height="400" loading="lazy" style="object-position:20% 70%" />
+              <div class="insta-tile__overlay" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"/></svg></div>
+            </a>
+            <a class="insta-tile" href="#" aria-label="Publicación en Instagram">
+              <img src="assets/tienda-2.png" alt="" width="400" height="400" loading="lazy" style="object-position:80% 30%" />
+              <div class="insta-tile__overlay" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"/></svg></div>
+            </a>
+            <a class="insta-tile" href="#" aria-label="Publicación en Instagram">
+              <img src="assets/vitrina-tacones.png" alt="" width="400" height="400" loading="lazy" style="object-position:50% 65%" />
+              <div class="insta-tile__overlay" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path fill="currentColor" d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"/></svg></div>
+            </a>
+          </div>
+          <div class="instagram__cta" data-reveal="fade-up" style="--delay:.2s">
+            <a class="btn btn--primary" href="#" target="_blank" rel="noopener noreferrer">Ver perfil en Instagram</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--shipping" id="envios" aria-labelledby="envios-title">
+        <div class="container container--split">
+          <div class="shipping__text">
+            <h2 class="section__title section__title--left" id="envios-title">Envíos y confianza</h2>
+            <p class="shipping__lead">
+              Información clara para que tu compra sea tranquila. Ajusta montos y plazos según tu operación real.
+            </p>
+            <ul class="shipping__list">
+              <li><strong>Envío nacional</strong> en 3 a 7 días hábiles (según zona).</li>
+              <li><strong>Rastreo</strong> por mensaje al despachar tu pedido.</li>
+              <li><strong>Cambios</strong> sujetos a disponibilidad; preguntamos por talla antes de enviar.</li>
+              <li><strong>Pick up en tienda</strong> disponible en horario comercial.</li>
+            </ul>
+          </div>
+          <div class="shipping__card" role="presentation">
+            <h3 class="shipping__card-title">Resumen de pedido (ejemplo)</h3>
+            <p class="shipping__card-line"><span>Productos</span><span>$3,230</span></p>
+            <p class="shipping__card-line"><span>Envío</span><span>$120</span></p>
+            <p class="shipping__card-line shipping__card-line--strong"><span>Total</span><span>$3,350</span></p>
+            <p class="shipping__card-note">Cifras ficticias · mismo flujo que en el carrito demo.</p>
+            <button type="button" class="btn btn--small btn--small-dark" id="shippingOpenCart">Abrir carrito demo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--faq" id="faq" aria-labelledby="faq-title">
+        <div class="container container--narrow">
+          <h2 class="section__title" id="faq-title">Preguntas frecuentes</h2>
+          <div class="faq">
+            <details class="faq__item">
+              <summary class="faq__q">¿Los precios de la web son los mismos que en tienda?</summary>
+              <p class="faq__a">En esta maqueta los importes son de ejemplo. En producción sincronizarías con tu POS o catálogo.</p>
+            </details>
+            <details class="faq__item">
+              <summary class="faq__q">¿Puedo reservar un modelo que está en “últimos pares”?</summary>
+              <p class="faq__a">Sí: lo habitual es apartar con anticipo o pagar en línea. Define la política con tu equipo y reflétala aquí.</p>
+            </details>
+            <details class="faq__item">
+              <summary class="faq__q">¿El botón de pago del carrito demo cobra algo?</summary>
+              <p class="faq__a">No. Es solo una simulación visual para mostrar la pasarela a tus clientes o inversionistas.</p>
+            </details>
+            <details class="faq__item">
+              <summary class="faq__q">¿Hacen envíos a todo el país?</summary>
+              <p class="faq__a">Este texto es plantilla. Indica estados, costos y paqueterías con las que trabajas.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--payments" id="pagos" aria-labelledby="pagos-title">
+        <div class="container">
+          <h2 class="section__title section__title--on-dark" id="pagos-title">Pasarela de pagos</h2>
+          <p class="payments__lead">
+            Así verán tus compradores los métodos aceptados al finalizar la compra. Es una <strong>vista previa visual</strong>;
+            no se conecta a ningún procesador.
+          </p>
+          <div class="payments__mock" role="presentation">
+            <div class="payments__mock-header">
+              <span class="payments__mock-lock" aria-hidden="true">🔒</span>
+              <span>Pago seguro · conexión cifrada (demo)</span>
+            </div>
+            <div class="payments__rail" aria-label="Métodos de pago aceptados (demostración)">
+              <div class="pay-chip pay-chip--visa">Visa</div>
+              <div class="pay-chip pay-chip--mc"><span class="pay-chip__mc" aria-hidden="true"></span>Mastercard</div>
+              <div class="pay-chip pay-chip--amex">Amex</div>
+              <div class="pay-chip pay-chip--paypal">PayPal</div>
+              <div class="pay-chip pay-chip--apple">Apple&nbsp;Pay</div>
+              <div class="pay-chip pay-chip--mercado">Mercado&nbsp;Pago</div>
+              <div class="pay-chip pay-chip--oxxo">OXXO&nbsp;Pay</div>
+            </div>
+            <p class="payments__note">
+              Para ver el flujo completo con productos y total, abre el <strong>carrito de demostración</strong> en la barra superior.
+            </p>
+            <button type="button" class="btn btn--primary btn--inline" id="pagosOpenCart">Probar carrito + checkout demo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--cta-band" aria-labelledby="cta-title">
+        <div class="container cta-band">
+          <div class="cta-band__text">
+            <h2 class="cta-band__title" id="cta-title">¿Lista para tu próximo par?</h2>
+            <p class="cta-band__sub">Escríbenos y armamos el look contigo: tallas, colores y envío.</p>
+          </div>
+          <div class="cta-band__actions">
+            <a class="btn btn--primary btn--lg" href="https://wa.me/11231585070" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <button type="button" class="btn btn--outline-light btn--lg" id="ctaOpenCart">Ver carrito demo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--newsletter" id="boletin">
+        <div class="container container--narrow">
+          <h2 class="section__title">Suscríbete a nuestro boletín</h2>
+          <form class="newsletter" id="newsletterForm" novalidate>
+            <label class="newsletter__field">
+              <span class="visually-hidden">Correo electrónico</span>
+              <input
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="Tu correo electrónico"
+                required
+              />
+              <button type="submit" class="newsletter__submit" aria-label="Enviar suscripción">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M5 12h14m-6-6 6 6-6 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </label>
+            <p class="newsletter__feedback" id="newsletterFeedback" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__grid">
+        <div class="footer__col footer__col--social">
+          <div class="footer__icons">
+            <a href="#" class="footer__icon" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M22 12a10 10 0 1 0-11.5 9.95v-7.05H7.9V12h2.65V9.8c0-2.6 1.55-4.05 3.9-4.05 1.13 0 2.3.2 2.3.2v2.53h-1.3c-1.28 0-1.68.8-1.68 1.62V12h2.85l-.45 2.9h-2.4v7.05A10 10 0 0 0 22 12Z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="footer__icon" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5ZM12 6.75A5.25 5.25 0 1 1 6.75 12 5.25 5.25 0 0 1 12 6.75Zm0 1.5a3.75 3.75 0 1 0 3.75 3.75A3.75 3.75 0 0 0 12 8.25Zm5.63-.88a1.12 1.12 0 1 1-1.12 1.12 1.12 1.12 0 0 1 1.12-1.12Z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="footer__icon" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M21.8 8.001s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C16 4.8 12 4.8 12 4.8h-.1s-4 0-6.9.2c-.4 0-1.3.1-2.1.9-.6.6-.8 2-.8 2S2 9.601 2 11.2v1.6c0 1.6.2 3.199.2 3.199s.2 1.4.8 2c.8.8 1.9.8 2.4.9 1.7.2 6.9.2 6.9.2s4 0 6.9-.2c.4 0 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.6c0-1.6-.2-3.199-.2-3.199ZM10 14.502v-5.2l5.2 2.6-5.2 2.6Z"
+                />
+              </svg>
+            </a>
+          </div>
+          <p class="footer__pay-label">Aceptamos</p>
+          <div class="footer__payments" aria-label="Métodos de pago">
+            <span class="pay pay--visa">Visa</span>
+            <span class="pay pay--mc">MC</span>
+            <span class="pay pay--pp">PayPal</span>
+            <span class="pay pay--mp">MP</span>
+          </div>
+        </div>
+        <div class="footer__col footer__col--brand">
+          <img
+            class="footer__logo"
+            src="assets/logolarcs.png"
+            alt="Calzado Larcs"
+            width="200"
+            height="72"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="footer__col footer__col--contact">
+          <p class="footer__line">
+            <span class="footer__glyph" aria-hidden="true">📍</span>
+            Rue. Benootanta, Artisis 2091, Concanco, G+ 55834
+          </p>
+          <p class="footer__line">
+            <span class="footer__glyph" aria-hidden="true">☎</span>
+            <a href="tel:+11231585070">+1 123 158 5070</a>
+          </p>
+          <p class="footer__line">
+            <span class="footer__glyph" aria-hidden="true">✉</span>
+            <a href="mailto:cmail@calzadolarcs.com">cmail@calzadolarcs.com</a>
+          </p>
+        </div>
+      </div>
+      <div class="footer__bar">
+        <p class="footer__copy">© 2026 Calzado Larcs. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+
+    <!-- WhatsApp: en href usa https://wa.me/52TU_NUMERO (solo dígitos, sin + ni espacios) -->
+    <a
+      class="whatsapp-float"
+      href="https://wa.me/11231585070"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Escríbenos por WhatsApp"
+      aria-label="Abrir conversación de WhatsApp con Calzado Larcs"
+    >
+      <svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M16.04 3C9.47 3 4.1 8.36 4.1 14.93c0 2.45.72 4.78 2.08 6.77L3 29l7.47-2.96a11.9 11.9 0 0 0 5.57 1.4h.01c6.57 0 11.94-5.36 11.94-11.93C27.99 8.36 22.62 3 16.04 3Zm0 21.47h-.01a9.4 9.4 0 0 1-4.8-1.32l-.34-.2-4.98 1.97 1.99-4.85-.22-.35a9.43 9.43 0 0 1-1.45-5.04c0-5.2 4.24-9.43 9.44-9.43 5.2 0 9.43 4.23 9.43 9.43 0 5.2-4.23 9.44-9.43 9.44Zm5.43-7.27c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.47-.89-.79-1.49-1.76-1.66-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.31 1.26.5 1.69.64.71.23 1.36.2 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.07-.12-.27-.2-.57-.35Z"
+        />
+      </svg>
+    </a>
+
+    <script src="script.js"></script>
+  </body>
+</html>
