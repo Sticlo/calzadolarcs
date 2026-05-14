@@ -448,10 +448,8 @@
     var SITE_URL = "https://sticlo.github.io/calzadolarcs/";
 
     function getRedirectUrl() {
-      var origin = (window.location.protocol === "file:" || !window.location.origin || window.location.origin === "null")
-        ? SITE_URL
-        : window.location.origin + window.location.pathname + "/";
-      return origin.replace(/\/?$/, "") + "?payment=ok";
+      // Wompi requiere HTTPS. En local siempre usamos la URL de producción.
+      return SITE_URL + "?payment=ok";
     }
 
     wompiContainer.innerHTML =
@@ -519,12 +517,39 @@
   if (payMethodWompi) payMethodWompi.addEventListener("click", function () { setPayMethod("wompi"); });
   if (payMethodCOD) payMethodCOD.addEventListener("click", function () { setPayMethod("cod"); });
 
+  var COD_COOLDOWN_MS = 60000; // 60 segundos entre envíos
+  var codLastSubmit = 0;
+
   if (codForm) {
     codForm.addEventListener("submit", function (e) {
       e.preventDefault();
+
+      // 1. Honeypot: si el campo oculto tiene contenido, es un bot
+      var hp = codForm.querySelector('input[name="_hp"]');
+      if (hp && hp.value.trim() !== "") return;
+
+      // 2. Cooldown: bloquear envíos repetidos en menos de 60 s
+      var now = Date.now();
+      if (now - codLastSubmit < COD_COOLDOWN_MS) {
+        var secsLeft = Math.ceil((COD_COOLDOWN_MS - (now - codLastSubmit)) / 1000);
+        if (cartToast) cartToast.textContent = "Espera " + secsLeft + " segundos antes de intentar de nuevo.";
+        return;
+      }
+
+      // 3. Validación nativa (incluye pattern de teléfono colombiano)
       if (!codForm.checkValidity()) { codForm.reportValidity(); return; }
+
       var fd = new FormData(codForm);
       var name = String(fd.get("codName") || "").trim();
+      var phone = String(fd.get("codPhone") || "").replace(/\D/g, "");
+
+      // 4. Validación extra: 10 dígitos, empieza con 3
+      if (!/^3[0-9]{9}$/.test(phone)) {
+        if (cartToast) cartToast.textContent = "Ingresa un número celular colombiano válido (ej. 3001234567).";
+        return;
+      }
+
+      codLastSubmit = now;
       cart = [];
       renderCart();
       if (successTitle) successTitle.textContent = "¡Pedido confirmado!";

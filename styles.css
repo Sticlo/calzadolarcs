@@ -1977,6 +1977,18 @@ button {
   border-color: transparent;
 }
 
+/* Honeypot — completamente invisible para humanos */
+.cod-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  tab-size: 0;
+}
+
 .cod-note {
   font-size: 0.78rem;
   color: var(--text-muted);
