@@ -126,6 +126,22 @@
           <p class="cart-drawer__checkout-label">Confirmar pedido</p>
           <div class="wompi-summary" id="wompiOrderSummary" aria-live="polite"></div>
 
+          <!-- Datos de envío — obligatorios para ambos métodos -->
+          <div class="shipping-fields">
+            <label class="cod-form__field">
+              <span class="cod-form__label">Nombre completo</span>
+              <input type="text" id="shipName" placeholder="Ej. Ana López" required maxlength="80" autocomplete="name" />
+            </label>
+            <label class="cod-form__field">
+              <span class="cod-form__label">Teléfono / WhatsApp</span>
+              <input type="tel" id="shipPhone" inputmode="numeric" placeholder="Ej. 3001234567" required maxlength="10" minlength="10" pattern="3[0-9]{9}" />
+            </label>
+            <label class="cod-form__field">
+              <span class="cod-form__label">Dirección de entrega</span>
+              <input type="text" id="shipAddress" placeholder="Calle, ciudad, barrio" required maxlength="160" autocomplete="street-address" />
+            </label>
+          </div>
+
           <div class="pay-method" role="group" aria-label="Método de pago">
             <button type="button" class="pay-method__btn is-selected" id="payMethodWompi" aria-pressed="true">
               <span class="pay-method__icon" aria-hidden="true">💳</span>
@@ -146,26 +162,12 @@
           </div>
 
           <div id="codPanel" hidden>
-            <form class="cod-form" id="codForm" novalidate>
-              <!-- Honeypot: invisible para humanos, los bots lo llenan -->
-              <label class="cod-hp" aria-hidden="true">
-                <input type="text" name="_hp" tabindex="-1" autocomplete="off" />
-              </label>
-              <label class="cod-form__field">
-                <span class="cod-form__label">Nombre completo</span>
-                <input type="text" name="codName" placeholder="Ej. Ana López" required maxlength="80" />
-              </label>
-              <label class="cod-form__field">
-                <span class="cod-form__label">Teléfono / WhatsApp</span>
-                <input type="tel" name="codPhone" inputmode="numeric" placeholder="Ej. 3001234567" required maxlength="10" minlength="10" pattern="3[0-9]{9}" />
-              </label>
-              <label class="cod-form__field">
-                <span class="cod-form__label">Dirección de entrega</span>
-                <input type="text" name="codAddress" placeholder="Calle, ciudad, barrio" required maxlength="160" />
-              </label>
-              <p class="cod-note">📦 Pagas al recibir. Nuestro equipo te contactará para confirmar el pedido.</p>
-              <button type="submit" class="btn btn--checkout" id="btnConfirmCOD">Confirmar pedido contra entrega</button>
-            </form>
+            <!-- Honeypot -->
+            <label class="cod-hp" aria-hidden="true">
+              <input type="text" id="shipHp" tabindex="-1" autocomplete="off" />
+            </label>
+            <p class="cod-note">📦 Pagas al recibir. Nuestro equipo te contactará para confirmar el pedido.</p>
+            <button type="button" class="btn btn--checkout" id="btnConfirmCOD">Confirmar pedido contra entrega</button>
           </div>
 
           <p class="cart-drawer__toast" id="cartToast" role="status" aria-live="polite"></p>

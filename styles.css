@@ -1941,6 +1941,14 @@ button {
 }
 
 /* Formulario contra entrega */
+/* Campos de envío compartidos (Wompi + COD) */
+.shipping-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 0.5rem 0 1rem;
+}
+
 .cod-form {
   display: flex;
   flex-direction: column;

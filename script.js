@@ -196,7 +196,10 @@
   var wompiSummary = document.getElementById("wompiOrderSummary");
   var wompiPanel = document.getElementById("wompiPanel");
   var codPanel = document.getElementById("codPanel");
-  var codForm = document.getElementById("codForm");
+  var shipName = document.getElementById("shipName");
+  var shipPhone = document.getElementById("shipPhone");
+  var shipAddress = document.getElementById("shipAddress");
+  var shipHp = document.getElementById("shipHp");
   var payMethodWompi = document.getElementById("payMethodWompi");
   var payMethodCOD = document.getElementById("payMethodCOD");
   var btnFinishDemo = document.getElementById("btnFinishDemo");
@@ -366,7 +369,8 @@
     if (cartToast) cartToast.textContent = "";
     if (wompiContainer) wompiContainer.innerHTML = "";
     if (wompiSummary) wompiSummary.innerHTML = "";
-    if (codForm) codForm.reset();
+    [shipName, shipPhone, shipAddress].forEach(function (el) { if (el) el.value = ""; });
+    if (shipHp) shipHp.value = "";
     setPayMethod("wompi");
     drawer.classList.remove("is-open");
     backdrop.classList.remove("is-visible");
@@ -463,12 +467,42 @@
     var btnWompiPay = document.getElementById("btnWompiPay");
     if (btnWompiPay) {
       btnWompiPay.addEventListener("click", function () {
+        // Validar campos de envío
+        var name = (shipName ? shipName.value.trim() : "");
+        var phone = (shipPhone ? shipPhone.value.replace(/\D/g, "") : "");
+        var address = (shipAddress ? shipAddress.value.trim() : "");
+        if (!name) { if (cartToast) cartToast.textContent = "Ingresa tu nombre completo."; if (shipName) shipName.focus(); return; }
+        if (!/^3[0-9]{9}$/.test(phone)) { if (cartToast) cartToast.textContent = "Ingresa un celular colombiano v\u00e1lido (ej. 3001234567)."; if (shipPhone) shipPhone.focus(); return; }
+        if (!address) { if (cartToast) cartToast.textContent = "Ingresa tu direcci\u00f3n de entrega."; if (shipAddress) shipAddress.focus(); return; }
+        if (cartToast) cartToast.textContent = "";
+
         var ref = generateReference();
         var amtStr = String(amountInCents);
         var currency = "COP";
 
+        // Resumen de items
+        var itemsSummary = cart.map(function (l) {
+          var p = PRODUCTS[l.id];
+          return (p ? p.name : l.id) + " T." + l.size + " x" + l.qty;
+        }).join(" | ");
+
         btnWompiPay.disabled = true;
         btnWompiPay.textContent = "Procesando...";
+
+        // Enviar datos a Formspree (fire-and-forget)
+        fetch("https://formspree.io/f/mkoyaqlb", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({
+            nombre: name,
+            telefono: phone,
+            direccion: address,
+            metodo: "Wompi (en l\u00ednea)",
+            items: itemsSummary,
+            total: formatMoney(getSubtotal() + SHIPPING_FLAT),
+            referencia: ref
+          }),
+        }).catch(function () {}); // no bloquear si Formspree falla
 
         fetch("/sign", {
           method: "POST",
@@ -520,15 +554,21 @@
   var COD_COOLDOWN_MS = 60000; // 60 segundos entre envíos
   var codLastSubmit = 0;
 
-  if (codForm) {
-    codForm.addEventListener("submit", function (e) {
-      e.preventDefault();
+  var btnConfirmCOD = document.getElementById("btnConfirmCOD");
+  if (btnConfirmCOD) {
+    btnConfirmCOD.addEventListener("click", function () {
+      // 1. Honeypot
+      if (shipHp && shipHp.value.trim() !== "") return;
 
-      // 1. Honeypot: si el campo oculto tiene contenido, es un bot
-      var hp = codForm.querySelector('input[name="_hp"]');
-      if (hp && hp.value.trim() !== "") return;
+      // 2. Validar campos compartidos
+      var name = (shipName ? shipName.value.trim() : "");
+      var phone = (shipPhone ? shipPhone.value.replace(/\D/g, "") : "");
+      var address = (shipAddress ? shipAddress.value.trim() : "");
+      if (!name) { if (cartToast) cartToast.textContent = "Ingresa tu nombre completo."; if (shipName) shipName.focus(); return; }
+      if (!/^3[0-9]{9}$/.test(phone)) { if (cartToast) cartToast.textContent = "Ingresa un celular colombiano v\u00e1lido (ej. 3001234567)."; if (shipPhone) shipPhone.focus(); return; }
+      if (!address) { if (cartToast) cartToast.textContent = "Ingresa tu direcci\u00f3n de entrega."; if (shipAddress) shipAddress.focus(); return; }
 
-      // 2. Cooldown: bloquear envíos repetidos en menos de 60 s
+      // 3. Cooldown
       var now = Date.now();
       if (now - codLastSubmit < COD_COOLDOWN_MS) {
         var secsLeft = Math.ceil((COD_COOLDOWN_MS - (now - codLastSubmit)) / 1000);
@@ -536,28 +576,38 @@
         return;
       }
 
-      // 3. Validación nativa (incluye pattern de teléfono colombiano)
-      if (!codForm.checkValidity()) { codForm.reportValidity(); return; }
-
-      var fd = new FormData(codForm);
-      var name = String(fd.get("codName") || "").trim();
-      var phone = String(fd.get("codPhone") || "").replace(/\D/g, "");
-
-      // 4. Validación extra: 10 dígitos, empieza con 3
-      if (!/^3[0-9]{9}$/.test(phone)) {
-        if (cartToast) cartToast.textContent = "Ingresa un número celular colombiano válido (ej. 3001234567).";
-        return;
-      }
-
+      if (cartToast) cartToast.textContent = "";
       codLastSubmit = now;
+
+      // Resumen de items
+      var itemsSummary = cart.map(function (l) {
+        var p = PRODUCTS[l.id];
+        return (p ? p.name : l.id) + " T." + l.size + " x" + l.qty;
+      }).join(" | ");
+
+      // Enviar a Formspree
+      fetch("https://formspree.io/f/mkoyaqlb", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          nombre: name,
+          telefono: phone,
+          direccion: address,
+          metodo: "Contra entrega",
+          items: itemsSummary,
+          total: formatMoney(getSubtotal() + SHIPPING_FLAT),
+          referencia: generateReference()
+        }),
+      }).catch(function () {}); // no bloquear si Formspree falla
+
       cart = [];
       renderCart();
-      if (successTitle) successTitle.textContent = "¡Pedido confirmado!";
+      if (successTitle) successTitle.textContent = "\u00a1Pedido confirmado!";
       if (successText) successText.textContent =
         "Hola " + name + ", recibimos tu pedido contra entrega. " +
-        "Te contactaremos por WhatsApp para coordinar la entrega.";
+        "Te contactaremos por WhatsApp al " + phone + " para coordinar la entrega.";
       showStep("success");
-      codForm.reset();
+      [shipName, shipPhone, shipAddress].forEach(function (el) { if (el) el.value = ""; });
     });
   }
 
