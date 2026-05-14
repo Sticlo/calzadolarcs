@@ -444,7 +444,12 @@
     }
 
     // Construir URL del checkout hosteado de Wompi
-    var redirectUrl = window.location.origin + window.location.pathname + "?payment=ok";
+    // Si se abre en local (file://) usar la URL del sitio desplegado
+    var SITE_URL = "https://sticlo.github.io/calzadolarcs/";
+    var origin = (window.location.protocol === "file:" || !window.location.origin || window.location.origin === "null")
+      ? SITE_URL
+      : window.location.origin + window.location.pathname + "/";
+    var redirectUrl = origin.replace(/\/?$/, "") + "?payment=ok";
     var wompiUrl = "https://checkout.wompi.co/p/?" +
       "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
       "&currency=COP" +
