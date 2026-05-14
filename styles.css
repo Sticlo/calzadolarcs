@@ -1815,6 +1815,69 @@ button {
   background: linear-gradient(180deg, #e31e24, #b51217);
 }
 
+.pay-chip--wompi {
+  background: linear-gradient(135deg, #7b2fbe, #c044e8);
+}
+
+.pay-chip--pse {
+  background: linear-gradient(135deg, #004f9f, #0071ce);
+}
+
+.pay-chip--nequi {
+  background: linear-gradient(135deg, #6f00cc, #3d0099);
+}
+
+.pay-chip--bancolombia {
+  background: linear-gradient(135deg, #f7c400, #e5a800);
+  color: #1a1a1a;
+}
+
+/* Wompi checkout */
+.wompi-summary {
+  border-top: 1px solid rgba(42, 36, 40, 0.1);
+  border-bottom: 1px solid rgba(42, 36, 40, 0.1);
+  padding: 0.85rem 0;
+  margin: 0.5rem 0 1rem;
+}
+
+.wompi-summary__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  padding: 0.2rem 0;
+}
+
+.wompi-summary__row--muted {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.wompi-summary__row--total {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 0.35rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed rgba(42, 36, 40, 0.15);
+}
+
+.wompi-container {
+  margin: 0.25rem 0 0.75rem;
+  min-height: 2.5rem;
+}
+
+.wompi-container form {
+  display: flex;
+  justify-content: center;
+}
+
+.wompi-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.03em;
+}
+
 .payments__note {
   margin: 1.15rem 0 0;
   text-align: center;

@@ -166,7 +166,11 @@
     "larcs-t6": { name: "Clear minimal", price: 980, img: "assets/vitrina-tacones.png" },
   };
 
-  var SHIPPING_FLAT = 120;
+  // ── Wompi: reemplaza "pub_test_" por tu llave real de producción cuando estés listo
+  var WOMPI_PUBLIC_KEY = "pub_test_REEMPLAZA_CON_TU_LLAVE_PUBLICA";
+
+  // Los precios del catálogo están en COP. El total se convierte a centavos para Wompi.
+  var SHIPPING_FLAT = 15000; // $15.000 COP de ejemplo — ajusta según tu operación
 
   var cartToggle = document.getElementById("cartToggle");
   var cartClose = document.getElementById("cartClose");
@@ -188,7 +192,8 @@
   var cartTotalEl = document.getElementById("cartTotal");
   var btnGoCheckout = document.getElementById("btnGoCheckout");
   var btnBackCart = document.getElementById("btnBackCart");
-  var fakeCheckoutForm = document.getElementById("fakeCheckoutForm");
+  var wompiContainer = document.getElementById("wompiContainer");
+  var wompiSummary = document.getElementById("wompiOrderSummary");
   var btnFinishDemo = document.getElementById("btnFinishDemo");
 
   if (!drawer || !backdrop || !cartLinesEl) return;
@@ -411,13 +416,48 @@
     closeCart();
   });
 
+  function generateReference() {
+    return "LARCS-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+  }
+
+  function injectWompiWidget(amountInCents, reference) {
+    if (!wompiContainer) return;
+
+    // Resumen del pedido encima del botón
+    if (wompiSummary) {
+      var subtotal = getSubtotal();
+      var total = subtotal + SHIPPING_FLAT;
+      wompiSummary.innerHTML =
+        "<div class='wompi-summary__row'><span>Subtotal</span><span>" + formatMoney(subtotal) + "</span></div>" +
+        "<div class='wompi-summary__row wompi-summary__row--muted'><span>Env\u00edo</span><span>" + formatMoney(SHIPPING_FLAT) + "</span></div>" +
+        "<div class='wompi-summary__row wompi-summary__row--total'><span>Total</span><span>" + formatMoney(total) + "</span></div>";
+    }
+
+    // Inyectar el widget de Wompi
+    wompiContainer.innerHTML = "";
+    var form = document.createElement("form");
+    var script = document.createElement("script");
+    script.src = "https://checkout.wompi.co/widget.js";
+    script.setAttribute("data-render", "button");
+    script.setAttribute("data-public-key", WOMPI_PUBLIC_KEY);
+    script.setAttribute("data-currency", "COP");
+    script.setAttribute("data-amount-in-cents", String(amountInCents));
+    script.setAttribute("data-reference", reference);
+    script.setAttribute(
+      "data-redirect-url",
+      window.location.origin + window.location.pathname + "?payment=ok"
+    );
+    form.appendChild(script);
+    wompiContainer.appendChild(form);
+  }
+
   if (btnGoCheckout) {
     btnGoCheckout.addEventListener("click", function () {
       if (cart.length === 0) return;
       showStep("checkout");
       if (cartToast) cartToast.textContent = "";
-      var first = fakeCheckoutForm && fakeCheckoutForm.querySelector("input");
-      if (first) setTimeout(function () { first.focus(); }, 200);
+      var total = getSubtotal() + SHIPPING_FLAT;
+      injectWompiWidget(total * 100, generateReference());
     });
   }
 
@@ -425,26 +465,8 @@
     btnBackCart.addEventListener("click", function () {
       showStep("cart");
       if (cartToast) cartToast.textContent = "";
-    });
-  }
-
-  if (fakeCheckoutForm) {
-    fakeCheckoutForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      if (cartToast) cartToast.textContent = "";
-      if (!fakeCheckoutForm.checkValidity()) {
-        fakeCheckoutForm.reportValidity();
-        return;
-      }
-      var fd = new FormData(fakeCheckoutForm);
-      var digits = String(fd.get("cardnumber") || "").replace(/\D/g, "");
-      if (digits.length < 15) {
-        if (cartToast) cartToast.textContent = "Introduce un número de tarjeta de prueba (15+ dígitos).";
-        return;
-      }
-      cart = [];
-      renderCart();
-      showStep("success");
+      if (wompiContainer) wompiContainer.innerHTML = "";
+      if (wompiSummary) wompiSummary.innerHTML = "";
     });
   }
 
@@ -460,6 +482,18 @@
       link.addEventListener("click", closeNav);
     });
   }
+
+  // Detectar retorno desde Wompi (?payment=ok)
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "ok") {
+      history.replaceState(null, "", window.location.pathname);
+      cart = [];
+      renderCart();
+      openCart();
+      showStep("success");
+    }
+  }());
 
   showStep("cart");
   renderCart();

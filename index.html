@@ -97,7 +97,7 @@
       <div class="cart-drawer__scroll">
         <div class="cart-step cart-step--cart is-active" id="cartStepCart" data-step="cart">
           <p class="cart-drawer__hint">
-            Simulación: añade tacones abajo con <strong>Comprar</strong>. Ningún cargo es real.
+            Añade productos con <strong>Comprar</strong> y procede al pago con Wompi.
           </p>
           <ul class="cart-lines" id="cartLines"></ul>
           <p class="cart-empty" id="cartEmpty">Tu carrito está vacío. Ve a <a href="#tacones">Tacones</a> y pulsa Comprar.</p>
@@ -123,60 +123,22 @@
 
         <div class="cart-step cart-step--checkout" id="cartStepCheckout" data-step="checkout" hidden>
           <button type="button" class="cart-step__back" id="btnBackCart">← Volver al carrito</button>
-          <p class="cart-drawer__checkout-label">Datos de tarjeta (ficticios)</p>
-          <form class="checkout-form" id="fakeCheckoutForm" autocomplete="off" novalidate>
-            <label class="checkout-form__field">
-              <span class="checkout-form__label">Nombre en la tarjeta</span>
-              <input type="text" name="cardname" placeholder="Ej. Ana López" required maxlength="80" />
-            </label>
-            <label class="checkout-form__field">
-              <span class="checkout-form__label">Número de tarjeta</span>
-              <input
-                type="text"
-                name="cardnumber"
-                inputmode="numeric"
-                placeholder="4242 4242 4242 4242"
-                required
-                minlength="15"
-                maxlength="23"
-              />
-            </label>
-            <div class="checkout-form__row">
-              <label class="checkout-form__field">
-                <span class="checkout-form__label">Vencimiento</span>
-                <input type="text" name="cardexp" placeholder="MM/AA" required maxlength="5" />
-              </label>
-              <label class="checkout-form__field">
-                <span class="checkout-form__label">CVV</span>
-                <input type="text" name="cardcvv" inputmode="numeric" placeholder="123" required maxlength="4" />
-              </label>
-            </div>
-            <label class="checkout-form__check">
-              <input type="checkbox" name="accept" required />
-              <span>Acepto que esto es una <strong>demostración</strong> y no autorizo ningún cargo.</span>
-            </label>
-            <div class="payments__mock payments__mock--compact" role="presentation">
-              <div class="payments__mock-header">
-                <span class="payments__mock-lock" aria-hidden="true">🔒</span>
-                <span>Pasarela simulada</span>
-              </div>
-              <div class="payments__rail payments__rail--compact" aria-hidden="true">
-                <div class="pay-chip pay-chip--visa">Visa</div>
-                <div class="pay-chip pay-chip--mc"><span class="pay-chip__mc" aria-hidden="true"></span>MC</div>
-                <div class="pay-chip pay-chip--amex">Amex</div>
-              </div>
-            </div>
-            <button type="submit" class="btn btn--checkout" id="btnConfirmFakePay">Confirmar pago (demo)</button>
-          </form>
+          <p class="cart-drawer__checkout-label">Confirmar pedido</p>
+          <div class="wompi-summary" id="wompiOrderSummary" aria-live="polite"></div>
+          <div class="wompi-container" id="wompiContainer"></div>
+          <p class="wompi-note">
+            <span aria-hidden="true">🔒</span>
+            Pago 100 % seguro · procesado por <strong>Wompi</strong> · cifrado SSL
+          </p>
           <p class="cart-drawer__toast" id="cartToast" role="status" aria-live="polite"></p>
         </div>
 
         <div class="cart-step cart-step--success" id="cartStepSuccess" data-step="success" hidden>
           <div class="cart-success">
             <span class="cart-success__icon" aria-hidden="true">✓</span>
-            <h3 class="cart-success__title">¡Pedido simulado!</h3>
+            <h3 class="cart-success__title">¡Pago recibido!</h3>
             <p class="cart-success__text">
-              No se ha guardado ni cobrado nada. Así podrías mostrar el mensaje de confirmación a tu cliente.
+              Tu pedido fue registrado correctamente. Recibirás confirmación al correo asociado a tu pago.
             </p>
             <button type="button" class="btn btn--checkout" id="btnFinishDemo">Cerrar y seguir navegando</button>
           </div>
@@ -718,8 +680,8 @@
               <p class="faq__a">Sí: lo habitual es apartar con anticipo o pagar en línea. Define la política con tu equipo y reflétala aquí.</p>
             </details>
             <details class="faq__item">
-              <summary class="faq__q">¿El botón de pago del carrito demo cobra algo?</summary>
-              <p class="faq__a">No. Es solo una simulación visual para mostrar la pasarela a tus clientes o inversionistas.</p>
+              <summary class="faq__q">¿Cómo se procesa el pago?</summary>
+              <p class="faq__a">Al confirmar tu carrito serás redirigido al checkout seguro de Wompi, donde puedes pagar con tarjeta, PSE, Nequi o Bancolombia. Wompi procesa el pago y te regresa al sitio con la confirmación.</p>
             </details>
             <details class="faq__item">
               <summary class="faq__q">¿Hacen envíos a todo el país?</summary>
@@ -733,27 +695,27 @@
         <div class="container">
           <h2 class="section__title section__title--on-dark" id="pagos-title">Pasarela de pagos</h2>
           <p class="payments__lead">
-            Así verán tus compradores los métodos aceptados al finalizar la compra. Es una <strong>vista previa visual</strong>;
-            no se conecta a ningún procesador.
+            Los pagos son procesados de forma segura por <strong>Wompi</strong>. Acepta tarjetas débito y crédito,
+            PSE, Nequi, Bancolombia y más.
           </p>
           <div class="payments__mock" role="presentation">
             <div class="payments__mock-header">
               <span class="payments__mock-lock" aria-hidden="true">🔒</span>
-              <span>Pago seguro · conexión cifrada (demo)</span>
+              <span>Pago seguro · procesado por Wompi · cifrado SSL</span>
             </div>
-            <div class="payments__rail" aria-label="Métodos de pago aceptados (demostración)">
+            <div class="payments__rail" aria-label="Métodos de pago aceptados">
+              <div class="pay-chip pay-chip--wompi">Wompi</div>
               <div class="pay-chip pay-chip--visa">Visa</div>
               <div class="pay-chip pay-chip--mc"><span class="pay-chip__mc" aria-hidden="true"></span>Mastercard</div>
               <div class="pay-chip pay-chip--amex">Amex</div>
-              <div class="pay-chip pay-chip--paypal">PayPal</div>
-              <div class="pay-chip pay-chip--apple">Apple&nbsp;Pay</div>
-              <div class="pay-chip pay-chip--mercado">Mercado&nbsp;Pago</div>
-              <div class="pay-chip pay-chip--oxxo">OXXO&nbsp;Pay</div>
+              <div class="pay-chip pay-chip--pse">PSE</div>
+              <div class="pay-chip pay-chip--nequi">Nequi</div>
+              <div class="pay-chip pay-chip--bancolombia">Bancolombia</div>
             </div>
             <p class="payments__note">
-              Para ver el flujo completo con productos y total, abre el <strong>carrito de demostración</strong> en la barra superior.
+              Agrega productos al carrito y haz clic en <strong>Continuar al pago</strong> para iniciar el checkout real con Wompi.
             </p>
-            <button type="button" class="btn btn--primary btn--inline" id="pagosOpenCart">Probar carrito + checkout demo</button>
+            <button type="button" class="btn btn--primary btn--inline" id="pagosOpenCart">Abrir carrito</button>
           </div>
         </div>
       </section>
