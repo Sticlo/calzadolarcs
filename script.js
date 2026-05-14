@@ -167,7 +167,7 @@
   };
 
   // ── Wompi: reemplaza "pub_test_" por tu llave real de producción cuando estés listo
-  var WOMPI_PUBLIC_KEY = "pub_test_REEMPLAZA_CON_TU_LLAVE_PUBLICA";
+  var WOMPI_PUBLIC_KEY = "pub_test_BxFYLFu3BW3VFJybC347qwdPGRpMAHim";
 
   // Los precios del catálogo están en COP. El total se convierte a centavos para Wompi.
   var SHIPPING_FLAT = 15000; // $15.000 COP de ejemplo — ajusta según tu operación
@@ -194,7 +194,14 @@
   var btnBackCart = document.getElementById("btnBackCart");
   var wompiContainer = document.getElementById("wompiContainer");
   var wompiSummary = document.getElementById("wompiOrderSummary");
+  var wompiPanel = document.getElementById("wompiPanel");
+  var codPanel = document.getElementById("codPanel");
+  var codForm = document.getElementById("codForm");
+  var payMethodWompi = document.getElementById("payMethodWompi");
+  var payMethodCOD = document.getElementById("payMethodCOD");
   var btnFinishDemo = document.getElementById("btnFinishDemo");
+  var successTitle = document.getElementById("successTitle");
+  var successText = document.getElementById("successText");
 
   if (!drawer || !backdrop || !cartLinesEl) return;
 
@@ -356,8 +363,11 @@
 
   function closeCart() {
     showStep("cart");
-    if (fakeCheckoutForm) fakeCheckoutForm.reset();
     if (cartToast) cartToast.textContent = "";
+    if (wompiContainer) wompiContainer.innerHTML = "";
+    if (wompiSummary) wompiSummary.innerHTML = "";
+    if (codForm) codForm.reset();
+    setPayMethod("wompi");
     drawer.classList.remove("is-open");
     backdrop.classList.remove("is-visible");
     document.body.classList.remove("is-cart-open");
@@ -451,6 +461,40 @@
       "</a>";
   }
 
+  function setPayMethod(method) {
+    var isWompi = method === "wompi";
+    if (wompiPanel) wompiPanel.hidden = !isWompi;
+    if (codPanel) codPanel.hidden = isWompi;
+    if (payMethodWompi) {
+      payMethodWompi.classList.toggle("is-selected", isWompi);
+      payMethodWompi.setAttribute("aria-pressed", String(isWompi));
+    }
+    if (payMethodCOD) {
+      payMethodCOD.classList.toggle("is-selected", !isWompi);
+      payMethodCOD.setAttribute("aria-pressed", String(!isWompi));
+    }
+  }
+
+  if (payMethodWompi) payMethodWompi.addEventListener("click", function () { setPayMethod("wompi"); });
+  if (payMethodCOD) payMethodCOD.addEventListener("click", function () { setPayMethod("cod"); });
+
+  if (codForm) {
+    codForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!codForm.checkValidity()) { codForm.reportValidity(); return; }
+      var fd = new FormData(codForm);
+      var name = String(fd.get("codName") || "").trim();
+      cart = [];
+      renderCart();
+      if (successTitle) successTitle.textContent = "¡Pedido confirmado!";
+      if (successText) successText.textContent =
+        "Hola " + name + ", recibimos tu pedido contra entrega. " +
+        "Te contactaremos por WhatsApp para coordinar la entrega.";
+      showStep("success");
+      codForm.reset();
+    });
+  }
+
   if (btnGoCheckout) {
     btnGoCheckout.addEventListener("click", function () {
       if (cart.length === 0) return;
@@ -467,6 +511,7 @@
       if (cartToast) cartToast.textContent = "";
       if (wompiContainer) wompiContainer.innerHTML = "";
       if (wompiSummary) wompiSummary.innerHTML = "";
+      setPayMethod("wompi");
     });
   }
 

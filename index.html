@@ -125,19 +125,53 @@
           <button type="button" class="cart-step__back" id="btnBackCart">← Volver al carrito</button>
           <p class="cart-drawer__checkout-label">Confirmar pedido</p>
           <div class="wompi-summary" id="wompiOrderSummary" aria-live="polite"></div>
-          <div class="wompi-container" id="wompiContainer"></div>
-          <p class="wompi-note">
-            <span aria-hidden="true">🔒</span>
-            Pago 100 % seguro · procesado por <strong>Wompi</strong> · cifrado SSL
-          </p>
+
+          <div class="pay-method" role="group" aria-label="Método de pago">
+            <button type="button" class="pay-method__btn is-selected" id="payMethodWompi" aria-pressed="true">
+              <span class="pay-method__icon" aria-hidden="true">💳</span>
+              Pagar en línea
+            </button>
+            <button type="button" class="pay-method__btn" id="payMethodCOD" aria-pressed="false">
+              <span class="pay-method__icon" aria-hidden="true">💵</span>
+              Contra entrega
+            </button>
+          </div>
+
+          <div id="wompiPanel">
+            <div class="wompi-container" id="wompiContainer"></div>
+            <p class="wompi-note">
+              <span aria-hidden="true">🔒</span>
+              Pago 100 % seguro · procesado por <strong>Wompi</strong> · cifrado SSL
+            </p>
+          </div>
+
+          <div id="codPanel" hidden>
+            <form class="cod-form" id="codForm" novalidate>
+              <label class="cod-form__field">
+                <span class="cod-form__label">Nombre completo</span>
+                <input type="text" name="codName" placeholder="Ej. Ana López" required maxlength="80" />
+              </label>
+              <label class="cod-form__field">
+                <span class="cod-form__label">Teléfono / WhatsApp</span>
+                <input type="tel" name="codPhone" inputmode="numeric" placeholder="Ej. 3001234567" required maxlength="15" />
+              </label>
+              <label class="cod-form__field">
+                <span class="cod-form__label">Dirección de entrega</span>
+                <input type="text" name="codAddress" placeholder="Calle, ciudad, barrio" required maxlength="160" />
+              </label>
+              <p class="cod-note">📦 Pagas al recibir. Nuestro equipo te contactará para confirmar el pedido.</p>
+              <button type="submit" class="btn btn--checkout" id="btnConfirmCOD">Confirmar pedido contra entrega</button>
+            </form>
+          </div>
+
           <p class="cart-drawer__toast" id="cartToast" role="status" aria-live="polite"></p>
         </div>
 
         <div class="cart-step cart-step--success" id="cartStepSuccess" data-step="success" hidden>
           <div class="cart-success">
             <span class="cart-success__icon" aria-hidden="true">✓</span>
-            <h3 class="cart-success__title">¡Pago recibido!</h3>
-            <p class="cart-success__text">
+            <h3 class="cart-success__title" id="successTitle">¡Pago recibido!</h3>
+            <p class="cart-success__text" id="successText">
               Tu pedido fue registrado correctamente. Recibirás confirmación al correo asociado a tu pago.
             </p>
             <button type="button" class="btn btn--checkout" id="btnFinishDemo">Cerrar y seguir navegando</button>
