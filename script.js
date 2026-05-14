@@ -229,8 +229,8 @@
     stepSuccess.hidden = step !== "success";
     if (cartTitle) {
       if (step === "cart") cartTitle.textContent = "Tu carrito";
-      else if (step === "checkout") cartTitle.textContent = "Pago simulado";
-      else cartTitle.textContent = "Pedido demo";
+      else if (step === "checkout") cartTitle.textContent = "Confirmar pedido";
+      else cartTitle.textContent = "¡Pedido recibido!";
     }
   }
 
@@ -420,10 +420,10 @@
     return "LARCS-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
   }
 
-  function injectWompiWidget(amountInCents, reference) {
+  function renderWompiCheckout(amountInCents, reference) {
     if (!wompiContainer) return;
 
-    // Resumen del pedido encima del botón
+    // Resumen del pedido
     if (wompiSummary) {
       var subtotal = getSubtotal();
       var total = subtotal + SHIPPING_FLAT;
@@ -433,22 +433,22 @@
         "<div class='wompi-summary__row wompi-summary__row--total'><span>Total</span><span>" + formatMoney(total) + "</span></div>";
     }
 
-    // Inyectar el widget de Wompi
-    wompiContainer.innerHTML = "";
-    var form = document.createElement("form");
-    var script = document.createElement("script");
-    script.src = "https://checkout.wompi.co/widget.js";
-    script.setAttribute("data-render", "button");
-    script.setAttribute("data-public-key", WOMPI_PUBLIC_KEY);
-    script.setAttribute("data-currency", "COP");
-    script.setAttribute("data-amount-in-cents", String(amountInCents));
-    script.setAttribute("data-reference", reference);
-    script.setAttribute(
-      "data-redirect-url",
-      window.location.origin + window.location.pathname + "?payment=ok"
-    );
-    form.appendChild(script);
-    wompiContainer.appendChild(form);
+    // Construir URL del checkout hosteado de Wompi
+    var redirectUrl = window.location.origin + window.location.pathname + "?payment=ok";
+    var wompiUrl = "https://checkout.wompi.co/p/?" +
+      "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
+      "&currency=COP" +
+      "&amount-in-cents=" + amountInCents +
+      "&reference=" + encodeURIComponent(reference) +
+      "&redirect-url=" + encodeURIComponent(redirectUrl);
+
+    wompiContainer.innerHTML =
+      "<a href='" + wompiUrl + "' class='btn btn--checkout btn--wompi-pay' target='_self'>" +
+      "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' aria-hidden='true' style='flex-shrink:0'>" +
+      "<path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' fill='currentColor'/>" +
+      "</svg>" +
+      "Pagar con Wompi" +
+      "</a>";
   }
 
   if (btnGoCheckout) {
@@ -457,7 +457,7 @@
       showStep("checkout");
       if (cartToast) cartToast.textContent = "";
       var total = getSubtotal() + SHIPPING_FLAT;
-      injectWompiWidget(total * 100, generateReference());
+      renderWompiCheckout(total * 100, generateReference());
     });
   }
 

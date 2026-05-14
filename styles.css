@@ -1870,6 +1870,33 @@ button {
   justify-content: center;
 }
 
+.btn--wompi-pay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  background: linear-gradient(135deg, #7b2fbe, #c044e8);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+  cursor: pointer;
+  border: none;
+  letter-spacing: 0.02em;
+}
+
+.btn--wompi-pay:hover,
+.btn--wompi-pay:focus-visible {
+  opacity: 0.88;
+  transform: translateY(-1px);
+  outline: 2px solid #c044e8;
+  outline-offset: 2px;
+}
+
 .wompi-note {
   font-size: 0.72rem;
   color: var(--text-muted);
