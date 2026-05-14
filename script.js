@@ -447,17 +447,11 @@
     // Si se abre en local (file://) usar la URL del sitio desplegado
     var SITE_URL = "https://sticlo.github.io/calzadolarcs/";
 
-    function buildWompiUrl() {
+    function getRedirectUrl() {
       var origin = (window.location.protocol === "file:" || !window.location.origin || window.location.origin === "null")
         ? SITE_URL
         : window.location.origin + window.location.pathname + "/";
-      var redirectUrl = origin.replace(/\/?$/, "") + "?payment=ok";
-      return "https://checkout.wompi.co/p/?" +
-        "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
-        "&currency=COP" +
-        "&amount-in-cents=" + amountInCents +
-        "&reference=" + encodeURIComponent(generateReference()) +
-        "&redirect-url=" + encodeURIComponent(redirectUrl);
+      return origin.replace(/\/?$/, "") + "?payment=ok";
     }
 
     wompiContainer.innerHTML =
@@ -465,13 +459,45 @@
       "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' aria-hidden='true' style='flex-shrink:0'>" +
       "<path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' fill='currentColor'/>" +
       "</svg>" +
-      "Pagar con Wompi" +
+      " Pagar con Wompi" +
       "</button>";
 
     var btnWompiPay = document.getElementById("btnWompiPay");
     if (btnWompiPay) {
       btnWompiPay.addEventListener("click", function () {
-        window.location.href = buildWompiUrl();
+        var ref = generateReference();
+        var amtStr = String(amountInCents);
+        var currency = "COP";
+
+        btnWompiPay.disabled = true;
+        btnWompiPay.textContent = "Procesando...";
+
+        fetch("/sign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reference: ref, amount: amtStr, currency: currency }),
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var url = "https://checkout.wompi.co/p/?" +
+              "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
+              "&currency=" + currency +
+              "&amount-in-cents=" + amtStr +
+              "&reference=" + encodeURIComponent(ref) +
+              "&signature:integrity=" + encodeURIComponent(data.signature) +
+              "&redirect-url=" + encodeURIComponent(getRedirectUrl());
+            window.location.href = url;
+          })
+          .catch(function () {
+            // Fallback para pruebas locales sin el worker (sin firma de integridad)
+            var url = "https://checkout.wompi.co/p/?" +
+              "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
+              "&currency=" + currency +
+              "&amount-in-cents=" + amtStr +
+              "&reference=" + encodeURIComponent(ref) +
+              "&redirect-url=" + encodeURIComponent(getRedirectUrl());
+            window.location.href = url;
+          });
       });
     }
   }
