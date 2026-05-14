@@ -430,7 +430,7 @@
     return "LARCS-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8).toUpperCase();
   }
 
-  function renderWompiCheckout(amountInCents, reference) {
+  function renderWompiCheckout(amountInCents) {
     if (!wompiContainer) return;
 
     // Resumen del pedido
@@ -446,24 +446,34 @@
     // Construir URL del checkout hosteado de Wompi
     // Si se abre en local (file://) usar la URL del sitio desplegado
     var SITE_URL = "https://sticlo.github.io/calzadolarcs/";
-    var origin = (window.location.protocol === "file:" || !window.location.origin || window.location.origin === "null")
-      ? SITE_URL
-      : window.location.origin + window.location.pathname + "/";
-    var redirectUrl = origin.replace(/\/?$/, "") + "?payment=ok";
-    var wompiUrl = "https://checkout.wompi.co/p/?" +
-      "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
-      "&currency=COP" +
-      "&amount-in-cents=" + amountInCents +
-      "&reference=" + encodeURIComponent(reference) +
-      "&redirect-url=" + encodeURIComponent(redirectUrl);
+
+    function buildWompiUrl() {
+      var origin = (window.location.protocol === "file:" || !window.location.origin || window.location.origin === "null")
+        ? SITE_URL
+        : window.location.origin + window.location.pathname + "/";
+      var redirectUrl = origin.replace(/\/?$/, "") + "?payment=ok";
+      return "https://checkout.wompi.co/p/?" +
+        "public-key=" + encodeURIComponent(WOMPI_PUBLIC_KEY) +
+        "&currency=COP" +
+        "&amount-in-cents=" + amountInCents +
+        "&reference=" + encodeURIComponent(generateReference()) +
+        "&redirect-url=" + encodeURIComponent(redirectUrl);
+    }
 
     wompiContainer.innerHTML =
-      "<a href='" + wompiUrl + "' class='btn btn--checkout btn--wompi-pay' target='_self'>" +
+      "<button type='button' class='btn btn--checkout btn--wompi-pay' id='btnWompiPay'>" +
       "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' aria-hidden='true' style='flex-shrink:0'>" +
       "<path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z' fill='currentColor'/>" +
       "</svg>" +
       "Pagar con Wompi" +
-      "</a>";
+      "</button>";
+
+    var btnWompiPay = document.getElementById("btnWompiPay");
+    if (btnWompiPay) {
+      btnWompiPay.addEventListener("click", function () {
+        window.location.href = buildWompiUrl();
+      });
+    }
   }
 
   function setPayMethod(method) {
@@ -506,7 +516,7 @@
       showStep("checkout");
       if (cartToast) cartToast.textContent = "";
       var total = getSubtotal() + SHIPPING_FLAT;
-      renderWompiCheckout(total * 100, generateReference());
+      renderWompiCheckout(total * 100);
     });
   }
 
